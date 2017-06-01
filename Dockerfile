@@ -1,16 +1,25 @@
 FROM python:3-slim
 
-WORKDIR /usr/src/app
+RUN apt-get update \
+    && apt-get install -y wget \
+    && apt-get clean
 
-COPY setup.py /usr/src/app/
-RUN pip install .
+RUN wget -O /tmp/consul-template.tgz https://releases.hashicorp.com/consul-template/0.18.5/consul-template_0.18.5_linux_amd64.tgz \
+    && tar -xf /tmp/consul-template.tgz -C /usr/local/bin/ \
+    && rm -f /tmp/consul-template.tgz
 
-COPY prometheus_es_exporter/*.py /usr/src/app/prometheus_es_exporter/
-RUN pip install -e .
+WORKDIR /app
 
-COPY LICENSE /usr/src/app/
-COPY README.md /usr/src/app/
+ENV ES_QUERY_INDICES "<logstash-{now/d}>"
 
 EXPOSE 9206
 
-ENTRYPOINT ["python", "-u", "/usr/local/bin/prometheus-es-exporter"]
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
+
+COPY setup.py /app/
+RUN pip install .
+
+COPY prometheus_es_exporter/*.py /app/prometheus_es_exporter/
+RUN pip install -e .
+
+COPY exporter.cfg.ctmpl docker-entrypoint.sh /app/

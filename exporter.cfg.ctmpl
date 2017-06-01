@@ -1,0 +1,32 @@
+[DEFAULT]
+QueryIntervalSecs = 60
+QueryTimeoutSecs = 10
+QueryIndices = {{ env "ES_QUERY_INDICES" }}
+
+{{range $i, $data := ls "services/alerts/elastic/"}}
+{{with $alerts := $data.Value | parseJSON}}
+{{range $name, $alert := $alerts}}
+[query_es_{{ $data.Key | replaceAll "-" "_" }}_{{$name | replaceAll "-" "_"}}]
+QueryJson = {
+    "size": 0,
+    "query": {
+      "filtered": {
+        "filter": {
+          "range": {
+            "@timestamp": {
+              "gte": "now-600s",
+              "lte": "now"
+            }
+          }
+        },
+        "query": {
+          "query_string": {
+            "query": {{$alert.query | toJSON}}
+          }
+        }
+      }
+    }
+  }
+{{end}}
+{{end}}
+{{end}}
