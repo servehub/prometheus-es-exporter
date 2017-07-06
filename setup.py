@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='prometheus-es-exporter',
-    version='0.4.0.dev1',
+    version='0.5.0.dev1',
     description='Elasticsearch query Prometheus exporter',
     url='https://github.com/Braedon/prometheus-es-exporter',
     author='Braedon Vickers',
@@ -21,7 +21,7 @@ setup(
     packages=find_packages(exclude=['tests']),
     install_requires=[
         'elasticsearch',
-        'logstash_formatter',
+        'jog',
         'prometheus-client'
     ],
     entry_points={
