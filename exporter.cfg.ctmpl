@@ -25,6 +25,13 @@ QueryJson = {
           }
         }
       }
+    },
+    "aggs": {
+        "hostname": {
+            "terms": {
+                "field": "hostname"
+            }
+        }
     }
   }
 {{end}}
