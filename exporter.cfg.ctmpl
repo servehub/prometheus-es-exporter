@@ -12,11 +12,9 @@ QueryJson = {
     "query": {
       "filtered": {
         "filter": {
-          "range": {
-            "@timestamp": {
-              "gte": "now-600s",
-              "lte": "now"
-            }
+          "bool": {
+            "must": {"range": {"@timestamp": {"gte": "now-600s", "lte": "now"}}},
+            "must_not": {"term": {"container_tag": "system/serve-server"}}
           }
         },
         "query": {
