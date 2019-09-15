@@ -1,4 +1,12 @@
-def parse_buckets(agg_key, buckets, metric=[], labels={}):
+from collections import OrderedDict
+
+
+def parse_buckets(agg_key, buckets, metric=None, labels=None):
+    if metric is None:
+        metric = []
+    if labels is None:
+        labels = OrderedDict()
+
     result = []
 
     for index, bucket in enumerate(buckets):
@@ -23,7 +31,12 @@ def parse_buckets(agg_key, buckets, metric=[], labels={}):
     return result
 
 
-def parse_buckets_fixed(agg_key, buckets, metric=[], labels={}):
+def parse_buckets_fixed(agg_key, buckets, metric=None, labels=None):
+    if metric is None:
+        metric = []
+    if labels is None:
+        labels = OrderedDict()
+
     result = []
 
     for bucket_key, bucket in buckets.items():
@@ -39,7 +52,12 @@ def parse_buckets_fixed(agg_key, buckets, metric=[], labels={}):
     return result
 
 
-def parse_agg(agg_key, agg, metric=[], labels={}):
+def parse_agg(agg_key, agg, metric=None, labels=None):
+    if metric is None:
+        metric = []
+    if labels is None:
+        labels = OrderedDict()
+
     result = []
 
     for key, value in agg.items():
@@ -49,17 +67,28 @@ def parse_agg(agg_key, agg, metric=[], labels={}):
             result.extend(parse_buckets_fixed(agg_key, value, metric=metric, labels=labels))
         elif isinstance(value, dict):
             result.extend(parse_agg(key, value, metric=metric + [key], labels=labels))
-        else:
+        # We only want numbers as metrics.
+        # Anything else (with the exception of sub-objects,
+        # which are handled above) is ignored.
+        elif isinstance(value, (int, float)):
             result.append((metric + [key], labels, value))
 
     return result
 
 
-def parse_response(response, metric=[]):
+def parse_response(response, metric=None):
+    if metric is None:
+        metric = []
+
     result = []
 
     if not response['timed_out']:
-        result.append((metric + ['hits'], {}, response['hits']['total']))
+        total = response['hits']['total']
+        # In ES7, hits.total changed from an integer to
+        # a dict with a 'value' key.
+        if isinstance(total, dict):
+            total = total['value']
+        result.append((metric + ['hits'], {}, total))
         result.append((metric + ['took', 'milliseconds'], {}, response['took']))
 
         if 'aggregations' in response.keys():
