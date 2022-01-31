@@ -1,5 +1,5 @@
 VERSION?=$(shell git describe --tags --abbrev=0 | sed 's/v//')
-TAG="kulikov/prometheus-es-exporter-consul"
+TAG="servehub/prometheus-es-exporter-consul"
 
 release:
 	@echo "==> Build and publish new docker image..."
