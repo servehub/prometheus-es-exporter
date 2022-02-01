@@ -22,7 +22,7 @@ setup(
     keywords='monitoring prometheus exporter elasticsearch',
     packages=find_packages(exclude=['tests']),
     install_requires=[
-        'elasticsearch',
+        'elasticsearch==7.0.4',
         'jog',
         'prometheus-client'
     ],
