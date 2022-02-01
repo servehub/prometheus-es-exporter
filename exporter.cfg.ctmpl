@@ -4,7 +4,7 @@ QueryTimeoutSecs = 10
 QueryIndices = {{ env "ES_QUERY_INDICES" }}
 
 {{ $consul_path := env "ES_CONSUL_PATH" }}
-{{range $i, $data := $consul_path }}
+{{range $i, $data := ls $consul_path }}
 {{with $alerts := $data.Value | parseJSON}}
 {{range $name, $alert := $alerts}}
 [query_es_{{ $data.Key | replaceAll "-" "_" }}_{{$name | replaceAll "-" "_"}}]
