@@ -4,15 +4,16 @@
 FROM python:3.6-slim
 
 RUN apt-get update \
-    && apt-get install -y wget \
+    && apt-get install -y unzip wget \
     && apt-get clean
 
-RUN wget -O /tmp/consul-template.tgz https://releases.hashicorp.com/consul-template/0.18.5/consul-template_0.18.5_linux_amd64.tgz \
-    && tar -xf /tmp/consul-template.tgz -C /usr/local/bin/ \
+RUN wget -O /tmp/consul-template.zip https://releases.hashicorp.com/consul-template/0.29.6/consul-template_0.29.6_linux_amd64.zip \
+    && unzip /tmp/consul-template.zip -d /usr/local/bin/ \
     && rm -f /tmp/consul-template.tgz
 
 WORKDIR /app
 
+ENV CONSUL_ADDRESS "localhost:9200"
 ENV ES_QUERY_INDICES "<logstash-{now/d}>"
 
 EXPOSE 9206

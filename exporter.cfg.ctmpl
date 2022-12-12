@@ -24,14 +24,21 @@ QueryJson = {
           }
         }
       }
-    },
+    }
+    {{ if $alert.terms }}
+    ,
     "aggs": {
-        "hostname": {
+      {{range $t, $term := $alert.terms}}
+        {{ if $t }}, {{ end }}
+        "{{$term}}": {
             "terms": {
-                "field": "hostname"
+                "field": "{{$term}}",
+                "size": 50
             }
         }
+      {{end}}
     }
+    {{end}}
   }
 {{end}}
 {{end}}
