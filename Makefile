@@ -3,6 +3,6 @@ TAG="servehub/prometheus-es-exporter-consul"
 
 release:
 	@echo "==> Build and publish new docker image..."
-	docker build -t ${TAG}:latest -t ${TAG}:${VERSION} .
+	docker build --platform=amd64 -t ${TAG}:latest -t ${TAG}:${VERSION} .
 	docker push ${TAG}:${VERSION}
 	docker push ${TAG}:latest

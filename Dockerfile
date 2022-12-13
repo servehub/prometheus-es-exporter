@@ -13,7 +13,7 @@ RUN wget -O /tmp/consul-template.zip https://releases.hashicorp.com/consul-templ
 
 WORKDIR /app
 
-ENV CONSUL_ADDRESS "localhost:9200"
+ENV CONSUL_ADDRESS "localhost:8500"
 ENV ES_QUERY_INDICES "<logstash-{now/d}>"
 
 EXPOSE 9206
