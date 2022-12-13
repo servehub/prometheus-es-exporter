@@ -30,10 +30,10 @@ QueryJson = {
     "aggs": {
       {{range $t, $term := $alert.terms}}
         {{ if $t }}, {{ end }}
-        "{{$term}}": {
+        "{{$term.field}}": {
             "terms": {
-                "field": "{{$term}}",
-                "size": 50
+                "field": "{{$term.field}}",
+                "size": {{$term.size}}
             }
         }
       {{end}}
